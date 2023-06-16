@@ -1,12 +1,16 @@
 'use client';
 import { CopySimple, GithubLogo, SunDim } from "@phosphor-icons/react";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="flex p-5 lg:p-0 items-center justify-center min-h-screen flex-col lg:mx-40 lg:my-auto gap-12">
       <header className="flex flex-col md:flex-row w-full items-center justify-between gap-5 md:gap-0">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl lg:text-4xl font-extrabold text-zinc-800 dark:text-zinc-200">Ciphery</h1>
+        <div className="flex flex-col gap-2 items-center md:items-start">
+          <div className="flex gap-3">
+            <Image src='/logo-symbol.svg' width={40} height={40} alt="Logo" />
+            <h1 className="text-3xl lg:text-4xl font-extrabold text-zinc-800 dark:text-zinc-200">Ciphery</h1>
+          </div>
           <p className="text-sm lg:text-xl dark:text-zinc-500 text-zinc-800 font-medium">Desbloqueie seu mundo com senhas seguras!</p>
         </div>
 
