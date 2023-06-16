@@ -6,6 +6,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata = {
   title: 'Ciphery',
   description: 'Cryptography passwords and keys',
+  icons: {
+    icon: '/logo-symbol.svg',
+  }
 };
 
 export default function RootLayout({
