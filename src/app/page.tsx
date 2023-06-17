@@ -1,5 +1,6 @@
 'use client';
 import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
 import { CopySimple, GithubLogo, SunDim } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,7 +34,7 @@ export default function Home() {
           <div className="flex flex-col items-start gap-3 w-full">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Senha padrão</h1>
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
-              <input className="h-10 w-full p-3 pr-0 outline-none bg-zinc-200 dark:bg-zinc-800 rounded text-zinc-700 dark:text-zinc-400" placeholder="Gerar senha?" />
+              <Input type="text" placeholder="Gerar senha?" />
               <div className="flex items-center gap-3">
                 <Button variant="zinc">
                   <CopySimple size={22} className="text-zinc-700" />
@@ -47,7 +48,7 @@ export default function Home() {
           <div className="flex flex-col items-start gap-3">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Hash Gerado</h1>
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
-              <input className="h-10 w-full p-3 pr-0 outline-none bg-zinc-200 dark:bg-zinc-800 rounded text-zinc-700 dark:text-zinc-400" value='32tqk&fa4@4z%1&L%dtdGxTQD4' disabled />
+              <Input type="text" value='32tqk&fa4@4z%1&L%dtdGxTQD4' disabled />
               <Button>
                 <CopySimple size={22} />
                 Copiar
@@ -74,7 +75,7 @@ export default function Home() {
 
           <div className="flex flex-col gap-2">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Tamanho</h1>
-            <input className="h-10 p-3 outline-none bg-zinc-200 dark:bg-zinc-800 rounded text-zinc-700 dark:text-zinc-400" type="number" min="1" max={100} placeholder="Min 1" />
+            <Input type="number" min="1" max={100} placeholder="Min 1" />
           </div>
         </div>
       </div>
