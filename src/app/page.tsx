@@ -1,9 +1,16 @@
 'use client';
 import { Button } from "@/components/Button";
+import { ButtonRounded } from "@/components/ButtonRounded";
 import { Input } from "@/components/Input";
 import { CopySimple } from "@phosphor-icons/react";
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
+import { useState } from "react";
+
+const passwordOpts = [{ name: 'ABC', value: 'uppercase'}, { name: 'abc', value: 'lowercase'}, { name: '123', value: 'numbers'}, { name: '!@#', value: 'symbols'}];
 
 export default function Home() {
+  const [passwordOptions, setPasswordOptions] = useState<string[]>([]);
+
   return (
     <main className="w-full">
       <div className="flex flex-col lg:grid lg:grid-cols-home w-full gap-10 items-start">
@@ -33,21 +40,34 @@ export default function Home() {
             </div>
 
             <div className="flex justify-center md:justify-start items-center mt-5 gap-2 w-full">
-              <button className="px-4 py-[2px] rounded-2xl border border-rose-400 dark:bg-rose-400/10 bg-zinc-100 text-rose-400 text-xs">MD5</button>
-              <button className="px-4 py-[2px] rounded-2xl border hover:border-rose-400 hover:bg-rose-400/10 hover:text-rose-400 dark:border-zinc-600 border-zinc-400 dark:bg-zinc-900 bg-zinc-100 text-zinc-600 text-xs transition-all">SHA-1</button>
-              <button className="px-4 py-[2px] rounded-2xl border hover:border-rose-400 hover:bg-rose-400/10 hover:text-rose-400 dark:border-zinc-600 border-zinc-400 dark:bg-zinc-900 bg-zinc-100 text-zinc-600 text-xs transition-all">BCRYPT</button>
+              <ButtonRounded checked>MD5</ButtonRounded>
+              <ButtonRounded>SHA-1</ButtonRounded>
+              <ButtonRounded>BCRYPT</ButtonRounded>
             </div>
           </div>
         </div>
         <div className="w-full flex rounded-xl p-8 gap-6 flex-col h-full items-start justify-center dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
           <div className="flex gap-3 flex-col">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Características</h1>
-            <div className="flex items-center gap-2">
-              <button className="px-4 py-[2px] rounded-2xl border border-rose-400 dark:bg-rose-400/10 bg-zinc-100 text-rose-400 text-xs">ABC</button>
-              <button className="px-4 py-[2px] rounded-2xl border hover:border-rose-400 hover:bg-rose-400/10 hover:text-rose-400 dark:border-zinc-600 border-zinc-400 dark:bg-zinc-900 bg-zinc-100 text-zinc-600 text-xs transition-all">abc</button>
-              <button className="px-4 py-[2px] rounded-2xl border hover:border-rose-400 hover:bg-rose-400/10 hover:text-rose-400 dark:border-zinc-600 border-zinc-400 dark:bg-zinc-900 bg-zinc-100 text-zinc-600 text-xs transition-all">123</button>
-              <button className="px-4 py-[2px] rounded-2xl border hover:border-rose-400 hover:bg-rose-400/10 hover:text-rose-400 dark:border-zinc-600 border-zinc-400 dark:bg-zinc-900 bg-zinc-100 text-zinc-600 text-xs transition-all">!#@</button>
-            </div>
+            <ToggleGroup.Root
+                  type="multiple"
+                  className="grid grid-cols-4 gap-2"
+                  value={passwordOptions}
+                  onValueChange={setPasswordOptions}
+                >
+                  {passwordOpts.map((opt, i) => (
+                    <ToggleGroup.Item
+                    key={i}
+                    value={opt.value}
+                    title={opt.name}
+                    asChild
+                  >
+                    <ButtonRounded checked={passwordOptions.includes(opt.value)}>
+                      {opt.name}
+                    </ButtonRounded>
+                  </ToggleGroup.Item>
+                  ))}
+                </ToggleGroup.Root>
           </div>
 
           <div className="flex flex-col gap-2">
