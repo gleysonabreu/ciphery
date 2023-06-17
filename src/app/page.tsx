@@ -1,6 +1,8 @@
 'use client';
+import { Button } from "@/components/Button";
 import { CopySimple, GithubLogo, SunDim } from "@phosphor-icons/react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -15,12 +17,14 @@ export default function Home() {
         </div>
 
         <div className="flex gap-2">
-          <button className="bg-zinc-100 dark:bg-zinc-800 rounded p-2 dark:text-zinc-500 transition-colors">
-            <SunDim size={25} />
-          </button>
-          <button className="bg-zinc-100 dark:bg-zinc-800 rounded p-2 dark:text-zinc-500">
-            <GithubLogo size={25} />
-          </button>
+          <Button variant="zinc">
+            <SunDim size={22} />
+          </Button>
+          <Button variant="zinc" asChild>
+            <Link href='/'>
+              <GithubLogo size={22} />
+            </Link>
+          </Button>
         </div>
       </header>
 
@@ -31,12 +35,12 @@ export default function Home() {
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
               <input className="h-10 w-full p-3 pr-0 outline-none bg-zinc-200 dark:bg-zinc-800 rounded text-zinc-700 dark:text-zinc-400" placeholder="Gerar senha?" />
               <div className="flex items-center gap-3">
-                <button className="bg-zinc-200 dark:bg-zinc-800 rounded p-2 dark:text-zinc-500 transition-colors">
-                  <CopySimple size={25} className="text-zinc-700" />
-                </button>
-                <button className="bg-rose-500 text-zinc-50 rounded px-6 py-2 text-sm font-normal transition-colors">
+                <Button variant="zinc">
+                  <CopySimple size={22} className="text-zinc-700" />
+                </Button>
+                <Button>
                   Gerar
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -44,10 +48,10 @@ export default function Home() {
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Hash Gerado</h1>
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
               <input className="h-10 w-full p-3 pr-0 outline-none bg-zinc-200 dark:bg-zinc-800 rounded text-zinc-700 dark:text-zinc-400" value='32tqk&fa4@4z%1&L%dtdGxTQD4' disabled />
-              <button className="flex items-center gap-2 bg-rose-500 text-zinc-50 rounded px-6 py-2 text-sm font-normal transition-colors">
-                <CopySimple size={25} />
+              <Button>
+                <CopySimple size={22} />
                 Copiar
-              </button>
+              </Button>
             </div>
 
             <div className="flex justify-center md:justify-start items-center mt-5 gap-2 w-full">
