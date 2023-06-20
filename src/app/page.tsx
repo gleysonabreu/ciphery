@@ -2,7 +2,6 @@
 import { Button } from "@/components/Button";
 import { ButtonRounded } from "@/components/ButtonRounded";
 import { Input } from "@/components/Input";
-import { Check, CopySimple } from "@phosphor-icons/react";
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import passwordPassword from 'generate-password';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -11,6 +10,7 @@ import { z } from "zod";
 import { useCallback, useEffect, useState } from "react";
 import crypto from 'crypto';
 import bcryptjs from 'bcryptjs';
+import { CopyToClipboard } from "@/components/CopyToClipboard";
 
 const passwordOpts = [{ name: 'ABC', value: 'uppercase'}, { name: 'abc', value: 'lowercase'}, { name: '123', value: 'numbers'}, { name: '!@#', value: 'symbols'}];
 const passwordEncryptedOpts = ['MD5', 'SHA-1', 'BCRYPT'];
@@ -27,7 +27,6 @@ const schema = z.object({
 
 export default function Home() {
   const [password, setPassword] = useState<string>('');
-  const [isCopied, setIsCopied] = useState<boolean>(false);
 
   const [passwordEncrypted, setPasswordEncrypted] = useState<string>('');
   const [typePasswordEncrypted, setTypePasswordEncrypted] = useState<string>('MD5');
@@ -55,12 +54,6 @@ export default function Home() {
     handleEncryptPassword();
   }, [handleEncryptPassword]);
 
-  useEffect(() => {
-    const timeCopied = setTimeout(() => setIsCopied(false), 5000);
-
-    return () => clearTimeout(timeCopied);
-  }, [isCopied]);
-
   const generatePasswordForm = useForm<GeneratePasswordProps>({
     resolver: zodResolver(schema),
   });
@@ -79,11 +72,6 @@ export default function Home() {
     setPassword(password);
   }
 
-  function copyTextToClipboard(text: string) {
-    setIsCopied(true);
-    navigator.clipboard.writeText(text);
-  }
-
   return (
     <FormProvider {...generatePasswordForm}>
     <form onSubmit={handleSubmit(handleGeneratePassword)} className="w-full">
@@ -94,9 +82,7 @@ export default function Home() {
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
               <Input value={password} onChange={e => setPassword(e.target.value)} name='password' type="text" placeholder="Gerar senha?" />
               <div className="flex items-center gap-3">
-                <Button variant="zinc" type='button' onClick={() => copyTextToClipboard(password)}>
-                  {isCopied ? <Check size={22} className="text-zinc-700" /> : <CopySimple size={22} className="text-zinc-700" />}
-                </Button>
+                <CopyToClipboard text={password} />
                 <Button type='submit'>
                   Gerar
                 </Button>
@@ -107,10 +93,9 @@ export default function Home() {
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Hash Gerado</h1>
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
               <Input name='password_crypt' type="text" value={passwordEncrypted} disabled />
-              <Button type='button' onClick={() => copyTextToClipboard(passwordEncrypted)}>
-                <CopySimple size={22} />
+              <CopyToClipboard text={passwordEncrypted}>
                 Copiar
-              </Button>
+              </CopyToClipboard>
             </div>
 
             <div className="flex justify-center md:justify-start items-center mt-5 gap-2 w-full">
