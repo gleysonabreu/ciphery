@@ -1,13 +1,13 @@
 'use client';
-import { Check, CopySimple } from "@phosphor-icons/react";
-import { ReactNode, useEffect, useState } from "react";
-import { Button } from "./Button";
+import { Check, CopySimple } from '@phosphor-icons/react';
+import { ReactNode, useEffect, useState } from 'react';
+import { Button } from './Button';
 
 type CopyToClipboardProps = {
   children?: ReactNode;
   text: string;
   asChild?: boolean;
-}
+};
 
 export function CopyToClipboard(props: CopyToClipboardProps) {
   const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -24,8 +24,16 @@ export function CopyToClipboard(props: CopyToClipboardProps) {
   }
 
   return (
-    <Button variant='zinc' type="button" onClick={() => copyTextToClipboard(props.text)}>
-      {isCopied ? <Check size={22} className="text-zinc-700" /> : <CopySimple size={22} className="text-zinc-700" />}
+    <Button
+      variant="zinc"
+      type="button"
+      onClick={() => copyTextToClipboard(props.text)}
+    >
+      {isCopied ? (
+        <Check size={22} className="text-zinc-700" />
+      ) : (
+        <CopySimple size={22} className="text-zinc-700" />
+      )}
       {props.children}
     </Button>
   );

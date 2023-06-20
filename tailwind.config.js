@@ -9,8 +9,8 @@ module.exports = {
     extend: {
       gridTemplateColumns: {
         home: '1fr 334px',
-      }
+      },
     },
   },
   plugins: [],
-}
+};

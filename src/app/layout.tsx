@@ -9,22 +9,22 @@ export const metadata = {
   description: 'Cryptography passwords and keys',
   icons: {
     icon: '/logo-symbol.svg',
-  }
+  },
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className='flex p-5 lg:p-0 items-center justify-center min-h-screen flex-col lg:mx-40 lg:my-auto gap-12'>
-        <Header />
-        {children}
+        <main className="flex p-5 lg:p-0 items-center justify-center min-h-screen flex-col lg:mx-40 lg:my-auto gap-12">
+          <Header />
+          {children}
         </main>
-        </body>
+      </body>
     </html>
-  )
+  );
 }

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
-    @apply max-w-[1344px] mx-auto bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200;
+  @apply max-w-[1344px] mx-auto bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200;
 }
