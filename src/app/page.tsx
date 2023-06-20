@@ -2,28 +2,73 @@
 import { Button } from "@/components/Button";
 import { ButtonRounded } from "@/components/ButtonRounded";
 import { Input } from "@/components/Input";
-import { CopySimple } from "@phosphor-icons/react";
+import { Check, CopySimple } from "@phosphor-icons/react";
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
-import { useState } from "react";
+import passwordPassword from 'generate-password';
+import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from "zod";
+import { useEffect, useState } from "react";
 
 const passwordOpts = [{ name: 'ABC', value: 'uppercase'}, { name: 'abc', value: 'lowercase'}, { name: '123', value: 'numbers'}, { name: '!@#', value: 'symbols'}];
 
+type GeneratePasswordProps = {
+  passwordOptions: string[];
+  length: number;
+}
+
+const schema = z.object({
+  passwordOptions: z.array(z.string(), { required_error: 'Selecione pelo menos uma opção' }).nonempty({ message: 'Selecione pelo menos uma opção' }),
+  length: z.coerce.number({ required_error: 'Você precisa digitar um tamanho.' }).min(10, { message: 'O tamanho mínimo é 10' }).max(100, { message: 'O tamanho máximo é 100' }),
+});
+
 export default function Home() {
-  const [passwordOptions, setPasswordOptions] = useState<string[]>([]);
+  const [password, setPassword] = useState<string>('');
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+
+  useEffect(() => {
+    const timeCopied = setTimeout(() => setIsCopied(false), 5000);
+
+    return () => clearTimeout(timeCopied);
+  }, [isCopied]);
+
+  const generatePasswordForm = useForm<GeneratePasswordProps>({
+    resolver: zodResolver(schema),
+  });
+
+  const { handleSubmit, control, formState: { errors } } = generatePasswordForm;
+
+  const handleGeneratePassword: SubmitHandler<GeneratePasswordProps> = async data => {
+    const password = passwordPassword.generate({
+      length: data.length,
+      symbols: data.passwordOptions.includes('symbols'),
+      numbers: data.passwordOptions.includes('numbers'),
+      uppercase: data.passwordOptions.includes('uppercase'),
+      lowercase: data.passwordOptions.includes('lowercase'),
+    });
+
+    setPassword(password);
+  }
+
+  function copyTextToClipboard(text: string) {
+    setIsCopied(true);
+    navigator.clipboard.writeText(text);
+  }
 
   return (
-    <main className="w-full">
+    <FormProvider {...generatePasswordForm}>
+    <form onSubmit={handleSubmit(handleGeneratePassword)} className="w-full">
       <div className="flex flex-col lg:grid lg:grid-cols-home w-full gap-10 items-start">
         <div className="flex flex-col gap-10 p-8 w-full dark:bg-zinc-900  border-zinc-200 border dark:border-zinc-800 rounded-xl">
           <div className="flex flex-col items-start gap-3 w-full">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Senha padrão</h1>
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
-              <Input type="text" placeholder="Gerar senha?" />
+              <Input value={password} onChange={e => setPassword(e.target.value)} name='password' type="text" placeholder="Gerar senha?" />
               <div className="flex items-center gap-3">
-                <Button variant="zinc">
-                  <CopySimple size={22} className="text-zinc-700" />
+                <Button variant="zinc" type='button' onClick={() => copyTextToClipboard(password)}>
+                  {isCopied ? <Check size={22} className="text-zinc-700" /> : <CopySimple size={22} className="text-zinc-700" />}
                 </Button>
-                <Button>
+                <Button type='submit'>
                   Gerar
                 </Button>
               </div>
@@ -32,7 +77,7 @@ export default function Home() {
           <div className="flex flex-col items-start gap-3">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Hash Gerado</h1>
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
-              <Input type="text" value='32tqk&fa4@4z%1&L%dtdGxTQD4' disabled />
+              <Input name='password_crypt' type="text" value='32tqk&fa4@4z%1&L%dtdGxTQD4' disabled />
               <Button>
                 <CopySimple size={22} />
                 Copiar
@@ -40,42 +85,51 @@ export default function Home() {
             </div>
 
             <div className="flex justify-center md:justify-start items-center mt-5 gap-2 w-full">
-              <ButtonRounded checked>MD5</ButtonRounded>
-              <ButtonRounded>SHA-1</ButtonRounded>
-              <ButtonRounded>BCRYPT</ButtonRounded>
+              <ButtonRounded type="button" checked>MD5</ButtonRounded>
+              <ButtonRounded type="button">SHA-1</ButtonRounded>
+              <ButtonRounded type="button">BCRYPT</ButtonRounded>
             </div>
           </div>
         </div>
         <div className="w-full flex rounded-xl p-8 gap-6 flex-col h-full items-start justify-center dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
           <div className="flex gap-3 flex-col">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Características</h1>
-            <ToggleGroup.Root
+            {errors.passwordOptions && <span className="text-red-500 text-sm">{errors.passwordOptions.message}</span>}
+            <Controller
+            control={control}
+            name="passwordOptions"
+            render={({ field }) => (
+              <ToggleGroup.Root
+                  {...field}
                   type="multiple"
                   className="grid grid-cols-4 gap-2"
-                  value={passwordOptions}
-                  onValueChange={setPasswordOptions}
+                  value={field.value}
+                  onValueChange={field.onChange}
                 >
                   {passwordOpts.map((opt, i) => (
-                    <ToggleGroup.Item
-                    key={i}
-                    value={opt.value}
-                    title={opt.name}
-                    asChild
-                  >
-                    <ButtonRounded checked={passwordOptions.includes(opt.value)}>
-                      {opt.name}
+                    <ButtonRounded key={i} checked={field.value?.includes(opt.value)} asChild>
+                      <ToggleGroup.Item
+                      value={opt.value}
+                      title={opt.name}
+                      >
+                        {opt.name}
+                      </ToggleGroup.Item>
                     </ButtonRounded>
-                  </ToggleGroup.Item>
                   ))}
                 </ToggleGroup.Root>
+            )}
+            />
+            
           </div>
 
           <div className="flex flex-col gap-2">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Tamanho</h1>
-            <Input type="number" min="1" max={100} placeholder="Min 1" />
+            {errors.length && <span className="text-red-500 text-sm">{errors.length.message}</span>}
+            <Input name="length" type="number" placeholder="Min 10" />
           </div>
         </div>
       </div>
-    </main>
+    </form>
+    </FormProvider>
   )
 }
