@@ -1,10 +1,13 @@
 'use client';
-import { GithubLogo, SunDim } from '@phosphor-icons/react';
+import { GithubLogo, Moon, SunDim } from '@phosphor-icons/react';
 import { Button } from './Button';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTheme } from '@/hooks/useTheme';
 
 export function Header() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <header className="flex flex-col md:flex-row w-full items-center justify-between gap-5 md:gap-0">
       <div className="flex flex-col gap-2 items-center md:items-start">
@@ -20,8 +23,8 @@ export function Header() {
       </div>
 
       <div className="flex gap-2">
-        <Button variant="zinc">
-          <SunDim size={22} />
+        <Button variant="zinc" onClick={toggleTheme}>
+          {theme === 'dark' ? <SunDim size={22} /> : <Moon size={22} />}
         </Button>
         <Button variant="zinc" asChild>
           <Link href="/">
