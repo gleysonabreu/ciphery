@@ -8,9 +8,12 @@ import passwordPassword from 'generate-password';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import crypto from 'crypto';
+import bcryptjs from 'bcryptjs';
 
 const passwordOpts = [{ name: 'ABC', value: 'uppercase'}, { name: 'abc', value: 'lowercase'}, { name: '123', value: 'numbers'}, { name: '!@#', value: 'symbols'}];
+const passwordEncryptedOpts = ['MD5', 'SHA-1', 'BCRYPT'];
 
 type GeneratePasswordProps = {
   passwordOptions: string[];
@@ -25,6 +28,32 @@ const schema = z.object({
 export default function Home() {
   const [password, setPassword] = useState<string>('');
   const [isCopied, setIsCopied] = useState<boolean>(false);
+
+  const [passwordEncrypted, setPasswordEncrypted] = useState<string>('');
+  const [typePasswordEncrypted, setTypePasswordEncrypted] = useState<string>('MD5');
+
+  const handleEncryptPassword = useCallback(() => {
+    let encrypted = '';
+
+    switch (typePasswordEncrypted) {
+      case 'MD5':
+        encrypted = crypto.createHash('md5').update(password).digest('hex');
+        break;
+      case 'SHA-1':
+        encrypted = crypto.createHash('sha1').update(password).digest('hex');
+        break;
+      
+      default:
+        encrypted = bcryptjs.hashSync(password, 10);
+    }
+
+    setPasswordEncrypted(encrypted);
+  }, [password, typePasswordEncrypted]);
+  
+
+  useEffect(() => {
+    handleEncryptPassword();
+  }, [handleEncryptPassword]);
 
   useEffect(() => {
     const timeCopied = setTimeout(() => setIsCopied(false), 5000);
@@ -77,17 +106,31 @@ export default function Home() {
           <div className="flex flex-col items-start gap-3">
             <h1 className="text-zinc-700 dark:text-zinc-400 font-semibold">Hash Gerado</h1>
             <div className="flex flex-col md:flex-row items-center gap-2 w-full">
-              <Input name='password_crypt' type="text" value='32tqk&fa4@4z%1&L%dtdGxTQD4' disabled />
-              <Button>
+              <Input name='password_crypt' type="text" value={passwordEncrypted} disabled />
+              <Button type='button' onClick={() => copyTextToClipboard(passwordEncrypted)}>
                 <CopySimple size={22} />
                 Copiar
               </Button>
             </div>
 
             <div className="flex justify-center md:justify-start items-center mt-5 gap-2 w-full">
-              <ButtonRounded type="button" checked>MD5</ButtonRounded>
-              <ButtonRounded type="button">SHA-1</ButtonRounded>
-              <ButtonRounded type="button">BCRYPT</ButtonRounded>
+            <ToggleGroup.Root
+                  type="single"
+                  className="grid grid-cols-3 gap-2"
+                  value={typePasswordEncrypted}
+                  onValueChange={setTypePasswordEncrypted}
+                >
+                  {passwordEncryptedOpts.map((opt, i) => (
+                    <ButtonRounded key={i} checked={typePasswordEncrypted === opt} asChild>
+                      <ToggleGroup.Item
+                      value={opt}
+                      title={opt}
+                      >
+                        {opt}
+                      </ToggleGroup.Item>
+                    </ButtonRounded>
+                  ))}
+                </ToggleGroup.Root>
             </div>
           </div>
         </div>
