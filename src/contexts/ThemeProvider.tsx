@@ -16,11 +16,15 @@ export const ThemeProviderContext =
   createContext<ThemeProviderContextValues | null>(null);
 
 export function ThemeProvider({ children }: ThemeProviderContextProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const storedTheme =
-      typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    return storedTheme ? (JSON.parse(storedTheme) as Theme) : 'light';
-  });
+  const [theme, setTheme] = useState<Theme>('light');
+
+  useEffect(() => {
+    const themeStorage = localStorage.getItem('theme');
+
+    if (themeStorage) {
+      setTheme(JSON.parse(themeStorage) as Theme);
+    }
+  }, []);
 
   useEffect(() => {
     if (theme === 'dark') {
