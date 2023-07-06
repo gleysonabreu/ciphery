@@ -23,7 +23,7 @@ export function Button({
   return (
     <Comp
       className={clsx(
-        'flex items-center gap-2 rounded font-normal transition-colors',
+        'flex items-center gap-2 rounded font-normal transition-colors justify-center',
         {
           'bg-rose-500 text-zinc-50 hover:bg-rose-600': variant === 'rose',
           'bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-500 hover:dark:bg-zinc-800/80 hover:bg-zinc-200/80':
